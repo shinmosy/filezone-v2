@@ -60,8 +60,7 @@ Maximum file size: <%= MaxSize %> </div>
 <%- include('comp/particles.ejs') %>
 </body>
 <script>
-$(document).ready(function(){
-let Toast = Swal.mixin({
+Toast = Swal.mixin({
         toast: true,
         position: 'top-end',
         showConfirmButton: false,
@@ -72,16 +71,11 @@ let Toast = Swal.mixin({
             toast.addEventListener('mouseleave', Swal.resumeTimer)
         }
     })
-    let Toaster = Swal.mixin({
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: true,
-        timer: 5000
-    })
+$(document).ready(function(){
 $("#upload-button").click(function(){
 var the_file = $('#the_file').val();
 if(the_file ==""){
-Toaster.fire({
+Toast.fire({
                 icon: 'error',
                 title: 'Please select the file!'
             })
@@ -122,7 +116,7 @@ function completeHandler(event){
 // $('#progress_container').css("display","none");
 try {
 jsonres = JSON.parse(event.target.responseText);
-Toaster.fire({
+Toast.fire({
                 icon: 'success',
                 title: 'Upload Success, Redirecting...'
             })
@@ -142,14 +136,14 @@ $('#upload-button').show();
 
  }
 function errorHandler(event){
-Toaster.fire({
+Toast.fire({
                 icon: 'error',
                 title: 'Oh No...Upload Failed'
             })
 $('#message_info').html("Upload Failed");
 }
 function abortHandler(event){
-Toaster.fire({
+Toast.fire({
                 icon: 'warning',
                 title: 'Upload Canceled...'
             })
