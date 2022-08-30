@@ -70,6 +70,7 @@ return false;
 $('#progress_container').css("display","block");
 var file = document.getElementById('the_file').files[0];
 if (file!="") {
+$('#upload-button').hide();
 var formdata = new FormData();
 formdata.append("file", file);
 var ajax = new XMLHttpRequest();
@@ -83,7 +84,7 @@ ajax.send(formdata);
 }
 });
 $('#btn_abort').click(function(){
-abortHandler();
+abortHandler(ajax);
 });
 });
 function bytesToSize(bytes) {
@@ -99,18 +100,19 @@ $('#status_bar').html("Uploaded " + bytesToSize(event.loaded) + " bytes of " + b
 $('#message_info').html(Math.round(percent)+"% uploaded... please wait");
 }
 function completeHandler(event){
-$('#the_file').hide();
 // $('#progress_container').css("display","none");
 $('#message_info').html("100% Upload Success, Redirecting...");
 setTimeout(() => {
 location.href = JSON.parse(event.target.responseText).result.url;
-}, 1000)
+}, 3000)
  }
 function errorHandler(event){
 $('#message_info').html("Upload Failed");
 }
 function abortHandler(event){
+$('#upload-button').show();
 $('#message_info').html("Upload Aborted");
+event.abort();
 }
 </script>
 </html>
