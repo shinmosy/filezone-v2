@@ -61,10 +61,30 @@ Maximum file size: <%= MaxSize %> </div>
 </body>
 <script>
 $(document).ready(function(){
+let Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 5000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    })
+    let Toaster = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: true,
+        timer: 5000
+    })
 $("#upload-button").click(function(){
 var the_file = $('#the_file').val();
 if(the_file ==""){
-alert('Please select the file');
+Toaster.fire({
+                icon: 'error',
+                title: 'Please select the file!'
+            })
 return false;
 }else{
 $('#progress_container').css("display","block");
@@ -96,18 +116,25 @@ return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
 function progressHandler(event){
 var percent = (event.loaded / event.total) * 100;
 $('#progressBar').val(Math.round(percent));
-$('#status_bar').html("Uploaded " + bytesToSize(event.loaded) + " bytes of " + bytesToSize(event.total));
-$('#message_info').html(Math.round(percent)+"% uploaded... please wait");
+$('#status_bar').html(Math.round(percent)+"% uploaded..." + ` (${bytesToSize(event.total - event loaded)} Remaining)`);
 }
 function completeHandler(event){
 // $('#progress_container').css("display","none");
 try {
 jsonres = JSON.parse(event.target.responseText);
-$('#message_info').html("100% Upload Success, Redirecting...");
+Toaster.fire({
+                icon: 'success',
+                title: 'Upload Success, Redirecting...'
+            })
+$('#message_info').html("Upload Success, Redirecting...");
 setTimeout(() => {
 location.href = jsonres.result.url;
 }, 3000)
 } catch (e) {
+Toaster.fire({
+                icon: 'error',
+                title: 'Oh No...Upload Failed'
+            })
 $('#message_info').html("Oh No...Upload Failed, Please try again!");
 $('#progress_container').css("display","none");
 $('#upload-button').show();
@@ -115,12 +142,20 @@ $('#upload-button').show();
 
  }
 function errorHandler(event){
+Toaster.fire({
+                icon: 'error',
+                title: 'Oh No...Upload Failed'
+            })
 $('#message_info').html("Upload Failed");
 }
 function abortHandler(event){
+Toaster.fire({
+                icon: 'warning',
+                title: 'Upload Canceled...'
+            })
 $('#upload-button').show();
 $('#progress_container').css("display","none");
-$('#message_info').html("Upload Aborted");
+$('#message_info').html("Upload Canceled...");
 event.abort();
 }
 </script>
