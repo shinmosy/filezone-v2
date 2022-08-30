@@ -1,0 +1,116 @@
+<!doctype HTML>
+<html>
+<head>
+<%- include('comp/_head.ejs') %>
+</head>
+<body>
+<div id="tsparticles"></div>
+<div class="container" id="container">
+<div class="page-header">
+<div class="col-md-12">
+<h1 style="color: #ffffffe1;" class="animated infinite pulse pulse2"> File Zone </h1>
+</div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(event) {
+    $('ul.nav.nav-tabs a:first').tab('show'); // Select first tab
+    $('ul.nav.nav-tabs a[href="'+ window.location.hash+ '"]').tab('show'); // Select tab by name if provided in location hash
+    $('ul.nav.nav-tabs a[data-toggle="tab"]').on('shown', function (event) {    // Update the location hash to current tab
+        window.location.hash= event.target.hash;
+    })
+});
+	</script>
+<div class="row">
+<div class="col-md-3 col-xs-0"></div>
+<div class="col-md-6 col-xs-12">
+<div class="panel panel-primary">
+<div class="panel-heading">Upload Your File</div>
+<div class="tabbable tabs-top panel-body">
+<ul class="nav nav-tabs" data-tabs="tab">
+<li><a data-toggle="tab">From File</a></li>
+</ul>
+<div class="tab-content" style="margin-top: 15px">
+<div class="tab-pane active" id="upload">
+<div class="form-group">
+<label>File: </label> <input type="file" name="file" id="the_file" class="form-control" required/>
+</div>
+<div style="font-size: x-small">
+Maximum file size: <%= MaxSize %> </div>
+<div class="form-group">
+</div>
+<button style="margin-top: 1rem" id="upload-button" class="btn btn-primary">Upload</button>
+</br>
+<div id="progress_container" class="progress_container">
+<progress id="progressBar" value="0" max="100" style="width:100%;"></progress>
+<p id="status_bar"></p>
+<button id="btn_abort" class="btn btn-warning" >Cancel</button>
+</div>
+<div id="message_info"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="col-md-12 text-center" style="margin-top: 50px">
+<p><a style="color: #ffffffff;"  href="//caliph.my.id">2022 Made by Caliph</a> | <a href="https://github.com/caliphdev/filezone">Source Code</a>
+</p>
+</div>
+</div>
+<%- include('comp/particles.ejs') %>
+</body>
+<script>
+$(document).ready(function(){
+$("#upload-button").click(function(){
+var the_file = $('#the_file').val();
+if(the_file ==""){
+alert('Please select the file');
+return false;
+}else{
+$('#progress_container').css("display","block");
+var file = document.getElementById('the_file').files[0];
+if (file!="") {
+var formdata = new FormData();
+formdata.append("file", file);
+var ajax = new XMLHttpRequest();
+ajax.upload.addEventListener("progress", progressHandler, false);
+ajax.addEventListener("load", completeHandler, false);
+ajax.addEventListener("error", errorHandler, false);
+ajax.addEventListener("abort", abortHandler, false);
+ajax.open("POST", "/backend/upload.php");
+ajax.send(formdata);
+}
+}
+});
+$('#btn_abort').click(function(){
+abortHandler();
+});
+});
+function bytesToSize(bytes) {
+var sizes = ['B', 'Kb', 'Mb', 'Gb', 'Tb'];
+if (bytes == 0) return '0 Byte';
+var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+}
+function progressHandler(event){
+var percent = (event.loaded / event.total) * 100;
+$('#progressBar').val(Math.round(percent));
+$('#status_bar').html("Uploaded " + bytesToSize(event.loaded) + " bytes of " + bytesToSize(event.total));
+$('#message_info').html(Math.round(percent)+"% uploaded... please wait");
+}
+function completeHandler(event){
+$('#the_file').hide();
+// $('#progress_container').css("display","none");
+$('#message_info').html("100% Upload Success, Redirecting...");
+setTimeout(() => {
+location.href = JSON.parse(event.target.responseText).result.url;
+}, 1000)
+ }
+function errorHandler(event){
+$('#message_info').html("Upload Failed");
+}
+function abortHandler(event){
+$('#message_info').html("Upload Aborted");
+}
+</script>
+</html>
