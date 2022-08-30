@@ -137,10 +137,12 @@ $('#upload-button').show();
  }
 function errorHandler(event){
 Toast.fire({
-                icon: 'error',
-                title: 'Oh No...Upload Failed'
-            })
-$('#message_info').html("Upload Failed");
+icon: 'error',
+title: 'Connection Error...'
+});
+$('#upload-button').show();
+$('#progress_container').css("display","none");
+$('#message_info').html("Upload Failed, Please Check Your Connection!");
 }
 function abortHandler(event){
 Toast.fire({
