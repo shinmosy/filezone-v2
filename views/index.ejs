@@ -116,7 +116,7 @@ return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
 function progressHandler(event){
 var percent = (event.loaded / event.total) * 100;
 $('#progressBar').val(Math.round(percent));
-$('#status_bar').html(Math.round(percent)+"% uploaded..." + ` (${bytesToSize(event.total - event loaded)} Remaining)`);
+$('#status_bar').html(Math.round(percent)+"% uploaded..." + ` (${bytesToSize(event.total - event.loaded)} Remaining)`);
 }
 function completeHandler(event){
 // $('#progress_container').css("display","none");
