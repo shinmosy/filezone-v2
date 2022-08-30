@@ -74,6 +74,9 @@ $('#upload-button').hide();
 var formdata = new FormData();
 formdata.append("file", file);
 var ajax = new XMLHttpRequest();
+$('#btn_abort').click(function(){
+abortHandler(ajax);
+});
 ajax.upload.addEventListener("progress", progressHandler, false);
 ajax.addEventListener("load", completeHandler, false);
 ajax.addEventListener("error", errorHandler, false);
@@ -82,9 +85,6 @@ ajax.open("POST", "/backend/upload.php");
 ajax.send(formdata);
 }
 }
-});
-$('#btn_abort').click(function(){
-abortHandler(ajax);
 });
 });
 function bytesToSize(bytes) {
