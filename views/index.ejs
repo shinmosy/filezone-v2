@@ -101,16 +101,25 @@ $('#message_info').html(Math.round(percent)+"% uploaded... please wait");
 }
 function completeHandler(event){
 // $('#progress_container').css("display","none");
+try {
+jsonres = JSON.parse(event.target.responseText);
 $('#message_info').html("100% Upload Success, Redirecting...");
 setTimeout(() => {
-location.href = JSON.parse(event.target.responseText).result.url;
+location.href = jsonres.result.url;
 }, 3000)
+} catch (e) {
+$('#message_info').html("Oh No...Upload Failed, Please try again!");
+$('#progress_container').css("display","none");
+$('#upload-button').show();
+}
+
  }
 function errorHandler(event){
 $('#message_info').html("Upload Failed");
 }
 function abortHandler(event){
 $('#upload-button').show();
+$('#progress_container').css("display","none");
 $('#message_info').html("Upload Aborted");
 event.abort();
 }
