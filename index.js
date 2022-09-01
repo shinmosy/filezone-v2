@@ -5,6 +5,7 @@ const { config } = require('dotenv');
 const cookieParser = require('cookie-parser');
 const chalk = require("chalk");
 const multer = require('multer');
+const https = require("https")
 const path = require('path');
 const serveIndex = require('serve-index');
 const fs = require('fs');
@@ -13,7 +14,7 @@ const ROOT = path.join(process.cwd(), "public");
 const app = express();
 const dbfile = require("./db/file.json");
 config();
-const port = process.env.PORT || 3344;
+const port = process.env.PORT || 80;
 let result = require("./db/file.json");
 
 // Create folder
@@ -69,6 +70,7 @@ if (nais.originalname) res.setHeader("Content-Disposition", `${req.query.hasOwnP
 next()
 })
 app.set('json spaces', 2)
+app.set('trust proxy', 2)
 app.use(cors())
 app.use(express.json())
 app.set("view engine", "ejs");
@@ -117,8 +119,9 @@ res.status(200).render('result', {
             originalname: file.originalname,
             encoding: file.encoding,
             mimetype: file.mimetype,
+            ext: file.originalname.split('.').pop(),
             filesize: formatBytes(file.size),
-            url_file: `${req.protocol}://${req.hostname == "localhost" ? "localhost:"+process.env.PORT : req.hostname}/file/` + file.filename,
+            url_file: `${req.protocol}://ffcdn-srv-1e2mf2sh6.filezone.cf/file/` + file.filename,
             url: `${req.protocol}://${req.hostname == "localhost" ? "localhost:"+process.env.PORT : req.hostname}/download/` + id
         }
     })
@@ -182,7 +185,7 @@ app.use(express.static(ROOT), serveIndex(ROOT, { icons: true }))
 
 // Handling 404
 app.use(function (req, res, next) {
-    if (/file/gi.test(req.path)) return res.status(404).render('errorpage', { statuscode: 404, statusmsg: 'File Not Found', title: '404 - File Not Found' })
+    if (/file|download/gi.test(req.path)) return res.status(404).render('errorpage', { statuscode: 404, statusmsg: 'File Not Found', title: '404 - File Not Found' })
     res.status(404).render('errorpage', { statuscode: 404, statusmsg: 'Not Found', title: '404 - Page Not Found' })
 })
 
