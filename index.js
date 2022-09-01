@@ -121,7 +121,7 @@ res.status(200).render('result', {
             mimetype: file.mimetype,
             ext: file.originalname.split('.').pop(),
             filesize: formatBytes(file.size),
-            url_file: `${req.protocol}://ffcdn-srv-1e2mf2sh6.filezone.cf/file/` + file.filename,
+            url_file: `${req.hostname == "localhost" ? "localhost:"+process.env.PORT : req.hostname}/file/` + file.filename,
             url: `${req.protocol}://${req.hostname == "localhost" ? "localhost:"+process.env.PORT : req.hostname}/download/` + id
         }
     })
