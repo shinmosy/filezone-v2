@@ -122,7 +122,7 @@ res.status(200).render('result', {
             ext: file.originalname.split('.').pop(),
             filesize: formatBytes(file.size),
             url_file: `${req.protocol}://${req.hostname == "localhost" ? "localhost:"+process.env.PORT : req.hostname}/file/` + file.filename,
-            url: `${req.protocol}://${req.hostname == "localhost" ? "localhost:"+process.env.PORT : req.hostname}/d/` + id
+            url: `${req.protocol}://${req.hostname == "localhost" ? "localhost:"+process.env.PORT : req.hostname}/download/` + id
         }
     })
 })
