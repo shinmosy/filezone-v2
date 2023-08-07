@@ -108,7 +108,7 @@ app.get('/', (req, res) => {
 })
 
 // Get Files
-app.get("/download/:id", (req, res, next) => {
+app.get("/d/:id", (req, res, next) => {
 let { id } = req.params;
 let file = result[id];
 if (!file) return next();
@@ -122,7 +122,7 @@ res.status(200).render('result', {
             ext: file.originalname.split('.').pop(),
             filesize: formatBytes(file.size),
             url_file: `${req.protocol}://${req.hostname == "localhost" ? "localhost:"+process.env.PORT : req.hostname}/file/` + file.filename,
-            url: `${req.protocol}://${req.hostname == "localhost" ? "localhost:"+process.env.PORT : req.hostname}/download/` + id
+            url: `${req.protocol}://${req.hostname == "localhost" ? "localhost:"+process.env.PORT : req.hostname}/d/` + id
         }
     })
 })
