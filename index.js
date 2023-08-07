@@ -108,7 +108,7 @@ app.get('/', (req, res) => {
 })
 
 // Get Files
-app.get("/d/:id", (req, res, next) => {
+app.get("/download/:id", (req, res, next) => {
 let { id } = req.params;
 let file = result[id];
 if (!file) return next();
